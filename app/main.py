@@ -1,0 +1,37 @@
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+# ===============
+from app.presentation.routers.user_router import router
+from app.presentation.routers.general_routes import router_genereal
+from app.presentation.routers.admin_router import router_admin
+from app.presentation.routers.todo_router import todo_router
+# ===============
+import time
+# ===============
+
+app = FastAPI()
+app.include_router(router= router)
+app.include_router(router= router_genereal)
+app.include_router(router= router_admin)
+app.include_router(router= todo_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    # It is safe for developing phase but in production it is dangerous
+    allow_origins = ['http://localhost:3000'],
+    allow_credentials = True,
+    allow_methods = ['*'],
+    allow_headers = ['*'],
+)
+
+@app.middleware('http')
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+
+    response = await call_next(request)
+    
+    process_time = time.time() - start_time
+    
+    print(f"{request.method} {request.url.path} ---- {process_time:.4f}s")
+
+    return response

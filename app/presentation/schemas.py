@@ -1,12 +1,12 @@
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, Field
 from typing import Optional
 from datetime import datetime
 from app.core import enums
 
 
 class UserCreate(BaseModel):
-    username : str
-    password : str
+    username : str = Field(min_length=3)
+    password : str = Field(min_length= 8)
     role : enums.UserRole = enums.UserRole.user
     
 class UserShow(BaseModel):
@@ -18,7 +18,7 @@ class UserShow(BaseModel):
 
 
 class TodoCreate(BaseModel):
-    title : str
+    title : str = Field(min_length= 3)
     description : str | None = None
     priority : enums.TodoPriority = enums.TodoPriority.low
     due_date : datetime | None = None

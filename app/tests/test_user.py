@@ -46,5 +46,14 @@ def test_endpoint_me(client, auth_header):
     response =  client.get('/me', headers= auth_header(username,'randompassword', 'user'))
     assert response.status_code == 200
     assert response.json()['username'] == username
-    
+# =================================================================================  
+
+def test_register_username_too_short(client):
+    response = client.post('/register',json={'username':'ts','password':'randompass','role' :'user'})
+    assert response.status_code == 422
+# =================================================================================  
+def test_register_password_too_short(client):
+    response = client.post('/register',json={'username':'test','password':'rando','role' :'user'})
+    assert response.status_code == 422
+   
 

@@ -129,6 +129,7 @@ cp .env.example .env
 Edit `.env` and fill in your values:
 ```
 DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/your_db_name
+DATABASE_URL_TEST=postgresql://postgres:yourpassword@localhost:5432/your_test_db_name
 SECRET_KEY=your-secret-key
 ```
 
@@ -160,7 +161,7 @@ Create a test database in PostgreSQL, then update `conftest.py` with your test d
 pytest -vv
 ```
 
-Expected: **31 tests passing**
+Expected: **34 tests passing**
 
 ---
 

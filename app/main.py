@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 # ===============
 from app.presentation.routers.user_router import router
@@ -14,6 +15,20 @@ app.include_router(router= router)
 app.include_router(router= router_genereal)
 app.include_router(router= router_admin)
 app.include_router(router= todo_router)
+
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request : Request, exc : Exception):
+    if isinstance(exc , HTTPException):
+        raise exc
+    return JSONResponse(
+        status_code= 500,
+        content={'detail' : 'Internal server error'}
+    )
+
+
+
 
 app.add_middleware(
     CORSMiddleware,

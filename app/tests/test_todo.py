@@ -59,7 +59,7 @@ def test_pagination_admin(client, create_a_todo, auth_header, only_get_token, cr
     assert len(response.json()) == 3
 
 def test_create_todo_title_too_short(client, auth_header):
-        user = auth_header('usertest','randompass','user')
+        user = auth_header('usertest1','randompass','user')
         response = client.post('/todos/create_todo', json={
             'title' : 'qw',
             'description' : 'description',

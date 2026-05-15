@@ -8,7 +8,7 @@ from sqlalchemy.sql import func
 class User(Base):
     __tablename__ = "users"
     
-    id = Column(Integer, index= True, primary_key= True)
+    id = Column(Integer, primary_key= True)
     
     username = Column(String, nullable= False, index= True ,unique= True)
     password_hash = Column(String, nullable= False)
@@ -21,7 +21,7 @@ class User(Base):
 class Todo(Base):
     __tablename__ = "todos"
     
-    id = Column(Integer, index = True, primary_key= True)
+    id = Column(Integer, primary_key= True)
     
     title = Column(String,nullable=False)
     description = Column(String,nullable=True)
@@ -31,7 +31,7 @@ class Todo(Base):
     
     status = Column(Enum(TodoStatus, name = 'todo_status'),nullable=False,default=TodoStatus.pending)
     
-    is_deleted = Column(Boolean, default=False)
+    is_deleted = Column(Boolean, default=False, index = True)
     
     priority = Column(Enum(TodoPriority,name = 'todo_priority'), default= TodoPriority.low)
     

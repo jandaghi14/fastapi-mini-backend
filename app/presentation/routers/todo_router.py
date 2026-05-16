@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.infrastructure.database import get_db
-from app.presentation.schemas import TodoCreate, TodoShow, TodoUpdate,TodoShowUpdate
+from app.presentation.schemas import TodoCreate, TodoShow, TodoUpdate,TodoShowUpdate, TodoShowWithOwner
 from app.core.user_service import get_current_user
 from app.core import todo_service
 from app.core.security import require_role
@@ -51,33 +51,10 @@ def endpoint_update_todo(todo_id:int,
                          db : Session= Depends(get_db)
                          ):
     return todo_service.update_todo(todo_id, new_todo, current_user, db)
+# ===============================================================================================================================
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@todo_router.get('/get_all_todo_with_username', response_model=list[TodoShowWithOwner])
+def endpoint_get_all_todos_with_username(limit : int = 10, offset:int= 0, current_user = Depends(get_current_user), db :Session =Depends(get_db)):
+    return todo_service.get_all_todos_with_username(current_user['user_id'],db , limit=limit, offset=offset)
 
 

@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.infrastructure.models import Todo
 from sqlalchemy.sql import func
 from app.infrastructure.repositories.user_repository import get_user_by_id_db
@@ -80,3 +80,8 @@ def update_todo_db(old_todo, new_todo, current_user,db:Session):
     db.commit()
     db.refresh(old_todo)
     return old_todo
+
+
+
+def get_all_todos_with_username_db(current_user:int, db:Session, limit = 10, offset = 0):
+    return db.query(Todo).options(joinedload(Todo.owner)).filter(Todo.user_id == current_user).all()

@@ -41,6 +41,35 @@ class TodoShow(BaseModel):
         from_attributes = True
         
         
+        
+class OwnerShow(BaseModel):
+    username: str
+    role : enums.UserRole
+    class Config:
+        from_attributes = True
+
+        
+
+class TodoShowWithOwner(BaseModel):
+    id : int
+    user_id : int
+    
+    title : str
+    description : str | None = None
+    
+    created_at : datetime
+    
+    status : enums.TodoStatus
+    priority : enums.TodoPriority
+    
+    is_deleted : bool
+    
+    owner : OwnerShow
+        
+    class Config:
+        from_attributes = True
+        
+        
 class TodoShowUpdate(TodoShow):
     updated_at : datetime | None
         

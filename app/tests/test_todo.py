@@ -68,3 +68,9 @@ def test_create_todo_title_too_short(client, auth_header):
         assert response.status_code == 422
 
 
+def test_get_all_todos_with_owner(client, auth_header,create_a_todo):
+    header = auth_header('test1username','randompass','user')
+    create_a_todo(headers = header)
+    response = client.get('/todos/get_all_todo_with_username', headers=header)
+    assert response.status_code == 200
+    assert response.json()[0]['owner']['username'] == 'test1username'

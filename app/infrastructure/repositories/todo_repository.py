@@ -57,9 +57,9 @@ def get_all_todos_db(current_user, db:Session, limit = 10, offset= 0, user_id : 
 
 def update_todo_db(old_todo, new_todo, current_user,db:Session): 
     if current_user['role'] == 'admin':
-        if new_todo.is_deleted is not None:
+        if hasattr(new_todo, 'is_deleted') and new_todo.is_deleted is not None:
             old_todo.is_deleted = new_todo.is_deleted
-        if new_todo.user_id is not None:
+        if hasattr(new_todo, 'user_id') and new_todo.user_id is not None:
             old_todo.user_id = new_todo.user_id
     
     

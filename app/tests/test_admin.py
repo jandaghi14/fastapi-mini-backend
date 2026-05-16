@@ -418,6 +418,30 @@ def test_admin_update_todo_failure_in_completed_todo(client, auth_header, create
     
     assert response.status_code == 422
     
+#---------------------------------------------------------------------------------------------
+def test_admin_get_other_user_all_todos_with_owner_name_success(client,auth_header,create_user,create_a_todo,only_get_token):
+    
+    admin1_username = f"user_{uuid.uuid4().hex[:6]}"
+    headers_admin = auth_header(username= admin1_username,password= 'admin1password',role = 'admin')
+    
+    user_username = f"user_{uuid.uuid4().hex[:6]}"
+    user_password = 'randompass'
+    role = 'user'
+    user1 = create_user(username = user_username, password = user_password, role = role)
+    user_id = user1['id']
+
+    token_user = only_get_token(user_username, user_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user}"}
+    
+    todo1 =create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    todo2 =create_a_todo(title = 'testtitletodo2', headers = headers_user1)
+
+    response = client.get(f"/admin/get_all_todos_with_owner/{user_id}", headers=headers_admin)
+
+    assert response.status_code == 200
+    assert len(response.json()) == 2
+    assert response.json()[0]['owner']['username'] == user_username
+    assert response.json()[1]['owner']['username'] == user_username
     
     
     

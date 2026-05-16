@@ -61,7 +61,12 @@ def update_todo(todo_id, new_todo, current_user, db):
     
     return todo_repository.update_todo_db(old_todo, new_todo,current_user , db)
 # ===========================================================================
-def get_all_todos_with_username(current_user:int, db, limit = 10, offset = 0):
+def get_all_todos_with_username(current_user:int, db,user_id:int = None, limit = 10, offset = 0):
+    if user_id is not None:
+        if user_repository.get_user_by_id_db(user_id , db):
+            return todo_repository.get_all_todos_with_username_db(user_id, db, limit= limit, offset=offset)
+        else:
+            raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail='User not found')
     if user_repository.get_user_by_id_db(current_user,db):
         return todo_repository.get_all_todos_with_username_db(current_user, db, limit= limit, offset=offset)
     else:

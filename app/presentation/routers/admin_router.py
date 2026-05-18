@@ -65,4 +65,4 @@ def endpoint_get_all_todos_with_owner(  user_id : int,
                                         current_user : dict = Depends(require_role('admin')),
                                         db : Session= Depends(get_db)):
     
-    return todo_service.get_all_todos_with_username(current_user, db, user_id = user_id, limit= limit, offset=offset)    
+    return todo_service.get_all_todos_with_username( user_id ,db,  limit= limit, offset=offset)    

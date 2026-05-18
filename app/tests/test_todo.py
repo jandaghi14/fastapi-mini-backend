@@ -113,4 +113,136 @@ def test_updated_at_changes_on_update(auth_header, create_a_todo,client,create_u
     assert response.json()['updated_at'] != original_updated_at 
 
     
+def test_user_update_todo_success(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    todo1 =create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    todo1_id = todo1['id']
+    
+    new_updated_todo = {
+        "title": "updatedString",
+        "description": "updateddescription",
+        "status": "pending",
+        "priority": "low",
+        "due_date": "2026-05-06T13:33:46.721Z"
+    }
+    response = client.put(f'/todos/update_todo/{todo1_id}', json= new_updated_todo, headers=headers_user1)
+    
+    assert response.status_code == 200
+    assert response.json()['title'] == 'updatedString'
+    assert response.json()['description'] == 'updateddescription'
+    assert response.json()['status'] == 'pending'
+    
+    
+def test_user_update_other_user_todo_forbidden(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role1 = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role1)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    todo1 =create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    todo1_id = todo1['id']
+    
+    user2_username = f"user_{uuid.uuid4().hex[:6]}"
+    user2_password = 'randompass'
+    role2 = 'user'
+    user2 = create_user(username = user2_username, password = user2_password, role = role2)
+    user_id2= user2['id']
+
+    token_user2 = only_get_token(user2_username, user2_password)
+    headers_user2 = {"Authorization" : f"Bearer {token_user2}"}
+
+    new_updated_todo = {
+        "title": "updatedString",
+        "description": "updateddescription",
+        "status": "pending",
+        "priority": "low",
+        "due_date": "2026-05-06T13:33:46.721Z"
+    }
+    response = client.put(f'/todos/update_todo/{todo1_id}', json= new_updated_todo, headers=headers_user2)
+    
+    assert response.status_code == 403
+
+
+def test_user_soft_delete_a_todo(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role1 = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role1)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    todo1 =create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    todo1_id = todo1['id']
+    
+    response1 = client.get(f'/todos/get_todo_by_id/{todo1_id}',headers = headers_user1)
+    assert response1.status_code == 200
+    assert response1.json()['id'] == todo1_id
+    
+    
+    client.delete(f'/todos/delete_todo/{todo1_id}', headers=headers_user1)
+    
+    response = client.get(f'/todos/get_todo_by_id/{todo1_id}', headers=headers_user1)
+    
+    assert response.status_code == 404
+    assert response.json()['detail'] == "Todo not found"
+    
+    
+def test_get_todo_by_id(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role1 = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role1)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    todo1 =create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    todo1_id = todo1['id']
+    
+    response1 = client.get(f'/todos/get_todo_by_id/{todo1_id}',headers = headers_user1)
+    assert response1.status_code == 200
+    assert response1.json()['id'] == todo1_id
+    
+    
+def test_get_todo_by_id_forbiden(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role1 = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role1)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    todo1 =create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    todo1_id = todo1['id']
+    
+    user2_username = f"user_{uuid.uuid4().hex[:6]}"
+    user2_password = 'randompass'
+    role2 = 'user'
+    user2 = create_user(username = user2_username, password = user2_password, role = role2)
+    user_id2= user2['id']
+    token_user2 = only_get_token(user2_username, user2_password)
+    headers_user2 = {"Authorization" : f"Bearer {token_user2}"}
+    
+    
+    
+    response1 = client.get(f'/todos/get_todo_by_id/{todo1_id}',headers = headers_user2)
+    assert response1.status_code == 403
+    assert response1.json()['id'] == todo1_id
     

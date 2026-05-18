@@ -68,7 +68,7 @@ fastapi-mini-backend/
 - GET /me — returns current logged-in user profile
 - Custom middleware — request logging with response time
 - CORS configured
-- Full test suite — 31 tests, all passing
+- Full test suite — 42 tests, all passing
 
 ---
 
@@ -86,6 +86,7 @@ fastapi-mini-backend/
 |--------|----------|-------------|------|
 | POST | /todos/create_todo | Create a todo | Yes |
 | GET | /todos/get_all_todos | Get all your todos (paginated) | Yes |
+| GET | /todos/get_all_todo_with_username | Get all your todos the owner name (paginated) | Yes |
 | GET | /todos/get_todo_by_id/{id} | Get a single todo | Yes |
 | PUT | /todos/update_todo/{id} | Update a todo | Yes |
 | DELETE | /todos/delete_todo/{id} | Soft delete a todo | Yes |
@@ -96,6 +97,7 @@ fastapi-mini-backend/
 | GET | /admin/ | Admin panel | Admin only |
 | GET | /admin/get_all_todos/{user_id} | Get any user's todos (paginated) | Admin only |
 | GET | /admin/get_todo_by_id/{id} | Get any todo | Admin only |
+| GET | /admin/get_all_todos_with_owner/{user_id} | Get any user's todos with the owner name (paginated) | Admin only |
 | PUT | /admin/update_todo/{id} | Update any todo | Admin only |
 | DELETE | /admin/hard_delete_todo/{id} | Hard delete a todo | Admin only |
 | DELETE | /admin/delete_user/{id} | Delete a user | Admin only |
@@ -161,7 +163,7 @@ Create a test database in PostgreSQL, then update `conftest.py` with your test d
 pytest -vv
 ```
 
-Expected: **34 tests passing**
+Expected: **42 tests passing**
 
 ---
 

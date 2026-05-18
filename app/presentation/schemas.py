@@ -38,6 +38,7 @@ class TodoShow(BaseModel):
     is_deleted : bool
     
     updated_at : datetime | None
+    due_date : datetime | None
     
     class Config:
         from_attributes = True

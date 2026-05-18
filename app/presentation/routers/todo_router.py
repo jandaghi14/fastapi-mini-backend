@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 from app.infrastructure.database import get_db
 from app.presentation.schemas import TodoCreate, TodoShow, TodoUpdate,TodoShowUpdate, TodoShowWithOwner
@@ -36,13 +37,15 @@ def endpoint_get_todo_by_id(todo_id : int ,
     return todo_service.get_todo_by_id(todo_id ,current_user, db)
 # ===============================================================================================================================
 @todo_router.get('/get_all_todos', response_model= list[TodoShow])
-def endpoint_get_all_todos(limit : int =10,
+def endpoint_get_all_todos(
+                           due_date_from :datetime =None,
+                           limit : int =10,
                            offset : int = 0,
                            current_user : dict = Depends(get_current_user),
-                           db : Session= Depends(get_db),
+                           db : Session= Depends(get_db)
                            ):
     
-    return todo_service.get_all_todos(current_user, db, limit =limit, offset = offset)
+    return todo_service.get_all_todos(current_user, db, limit =limit, offset = offset,due_date_from=due_date_from)
 # ===============================================================================================================================
 @todo_router.put('/update_todo/{todo_id}',response_model=TodoShowUpdate)
 def endpoint_update_todo(todo_id:int,
@@ -54,7 +57,12 @@ def endpoint_update_todo(todo_id:int,
 # ===============================================================================================================================
 
 @todo_router.get('/get_all_todo_with_username', response_model=list[TodoShowWithOwner])
-def endpoint_get_all_todos_with_username(limit : int = 10, offset:int= 0, current_user = Depends(get_current_user), db :Session =Depends(get_db)):
-    return todo_service.get_all_todos_with_username(current_user['user_id'],db , limit=limit, offset=offset)
+def endpoint_get_all_todos_with_username(due_date_from :datetime =None,
+                                         limit : int = 10, 
+                                         offset:int= 0, 
+                                         current_user = Depends(get_current_user), 
+                                         db :Session =Depends(get_db)
+                                         ):
+    return todo_service.get_all_todos_with_username(current_user['user_id'],db , limit=limit, offset=offset,due_date_from=due_date_from)
 
 

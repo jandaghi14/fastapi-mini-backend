@@ -239,10 +239,132 @@ def test_get_todo_by_id_forbiden(client, create_user, create_a_todo, only_get_to
     user_id2= user2['id']
     token_user2 = only_get_token(user2_username, user2_password)
     headers_user2 = {"Authorization" : f"Bearer {token_user2}"}
-    
-    
-    
     response1 = client.get(f'/todos/get_todo_by_id/{todo1_id}',headers = headers_user2)
     assert response1.status_code == 403
-    assert response1.json()['id'] == todo1_id
     
+def test_get_all_todos_with_due_date_success(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    create_a_todo(title = 'testtitletodo2', headers = headers_user1)
+    
+    todo3 = create_a_todo(title = 'testtitletodo3', headers = headers_user1)
+    todo_id3 = todo3['id']
+    todo4 = create_a_todo(title = 'testtitletodo4', headers = headers_user1)
+    todo_id4 = todo4['id']
+    
+    new_updated_todo = {
+        "due_date": "2026-05-22T13:33:46.721Z"
+    }
+    client.put(f'/todos/update_todo/{todo_id3}', json= new_updated_todo, headers=headers_user1)
+    client.put(f'/todos/update_todo/{todo_id4}', json= new_updated_todo, headers=headers_user1)
+    
+    response = client.get(f'/todos/get_all_todos',
+                          params= {'due_date_from' : '2026-05-22'},
+                          headers=headers_user1
+                          )
+    assert len(response.json()) ==2
+    assert response.status_code == 200
+
+    
+    
+def test_get_all_todos_without_due_date(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    create_a_todo(title = 'testtitletodo2', headers = headers_user1)
+    
+    todo3 = create_a_todo(title = 'testtitletodo3', headers = headers_user1)
+    todo_id3 = todo3['id']
+    todo4 = create_a_todo(title = 'testtitletodo4', headers = headers_user1)
+    todo_id4 = todo4['id']
+    
+    new_updated_todo = {
+        "due_date": "2026-05-22T13:33:46.721Z"
+    }
+    client.put(f'/todos/update_todo/{todo_id3}', json= new_updated_todo, headers=headers_user1)
+    client.put(f'/todos/update_todo/{todo_id4}', json= new_updated_todo, headers=headers_user1)
+    
+    response = client.get(f'/todos/get_all_todos',headers=headers_user1)
+    assert len(response.json()) ==4
+    assert response.status_code == 200
+    
+    
+    
+    
+def test_get_all_todos_with_due_date__with_owner_success(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    create_a_todo(title = 'testtitletodo2', headers = headers_user1)
+    
+    todo3 = create_a_todo(title = 'testtitletodo3', headers = headers_user1)
+    todo_id3 = todo3['id']
+    todo4 = create_a_todo(title = 'testtitletodo4', headers = headers_user1)
+    todo_id4 = todo4['id']
+    
+    new_updated_todo = {
+        "due_date": "2026-05-22T13:33:46.721Z"
+    }
+    client.put(f'/todos/update_todo/{todo_id3}', json= new_updated_todo, headers=headers_user1)
+    client.put(f'/todos/update_todo/{todo_id4}', json= new_updated_todo, headers=headers_user1)
+    
+    response = client.get(f'/todos/get_all_todo_with_username',
+                          params= {'due_date_from' : '2026-05-22'},
+                          headers=headers_user1
+                          )
+    assert len(response.json()) ==2
+    assert response.status_code == 200
+    assert response.json()[0]['owner']['username'] == user1_username
+
+    
+    
+def test_get_all_todos_without_due_date_with_owner_(client, create_user, create_a_todo, only_get_token):
+    user1_username = f"user_{uuid.uuid4().hex[:6]}"
+    user1_password = 'randompass'
+    role = 'user'
+    user1 = create_user(username = user1_username, password = user1_password, role = role)
+    user_id = user1['id']
+
+    token_user1 = only_get_token(user1_username, user1_password)
+    headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
+    
+    create_a_todo(title = 'testtitletodo1', headers = headers_user1)
+    create_a_todo(title = 'testtitletodo2', headers = headers_user1)
+    
+    todo3 = create_a_todo(title = 'testtitletodo3', headers = headers_user1)
+    todo_id3 = todo3['id']
+    todo4 = create_a_todo(title = 'testtitletodo4', headers = headers_user1)
+    todo_id4 = todo4['id']
+    
+    new_updated_todo = {
+        "due_date": "2026-05-22T13:33:46.721Z"
+    }
+    client.put(f'/todos/update_todo/{todo_id3}', json= new_updated_todo, headers=headers_user1)
+    client.put(f'/todos/update_todo/{todo_id4}', json= new_updated_todo, headers=headers_user1)
+    
+    response = client.get(f'/todos/get_all_todo_with_username',headers=headers_user1)
+    assert len(response.json()) ==4
+    assert response.status_code == 200
+    assert response.json()[0]['owner']['username'] == user1_username

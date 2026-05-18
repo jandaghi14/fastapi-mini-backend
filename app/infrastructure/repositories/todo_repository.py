@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.sql import func
+from datetime import datetime
 
 
 
@@ -45,11 +46,26 @@ def soft_delete_todo_db(todo:Todo, db:Session):
     db.refresh(todo)
     return True
 
-def get_all_todos_db(db:Session, user_id : int , limit = 10, offset= 0, include_deleted : bool = False):
+
+
+
+
+def get_all_todos_db(db:Session, user_id : int , limit = 10, offset= 0, include_deleted : bool = False, due_date_from : datetime = None):
     query = db.query(Todo).filter(Todo.user_id == user_id)
+    
     if not include_deleted:
-        query = query.filter(Todo.is_deleted == False)
+        query= query.filter(Todo.is_deleted == False)
+        
+    if due_date_from is not None:
+        query= query.filter(Todo.due_date >= due_date_from)
+        
+        
     return query.limit(limit).offset(offset).all()
+
+
+
+
+
 
 def update_todo_db(old_todo, new_todo,db:Session, is_admin:bool = False): 
     if is_admin:
@@ -79,5 +95,8 @@ def update_todo_db(old_todo, new_todo,db:Session, is_admin:bool = False):
 
 
 
-def get_all_todos_with_username_db(current_user:int, db:Session, limit = 10, offset = 0):
-    return db.query(Todo).options(joinedload(Todo.owner)).filter(Todo.user_id == current_user).all()
+def get_all_todos_with_username_db(current_user:int, db:Session, limit = 10, offset = 0,due_date_from : datetime = None):
+    if due_date_from is not None:
+        return db.query(Todo).options(joinedload(Todo.owner)).filter(Todo.user_id == current_user,Todo.due_date >= due_date_from).all()
+    else:
+        return db.query(Todo).options(joinedload(Todo.owner)).filter(Todo.user_id == current_user).all()

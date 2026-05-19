@@ -68,7 +68,7 @@ fastapi-mini-backend/
 - GET /me — returns current logged-in user profile
 - Custom middleware — request logging with response time
 - CORS configured
-- Full test suite — 42 tests, all passing
+- Full test suite — 47 tests, all passing
 
 ---
 
@@ -163,7 +163,7 @@ Create a test database in PostgreSQL, then update `conftest.py` with your test d
 pytest -vv
 ```
 
-Expected: **42 tests passing**
+Expected: **47 tests passing**
 
 ---
 

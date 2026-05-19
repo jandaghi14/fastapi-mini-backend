@@ -1,4 +1,4 @@
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, model_validator, Field, ConfigDict
 from typing import Optional
 from datetime import datetime
 from app.core import enums
@@ -13,8 +13,7 @@ class UserShow(BaseModel):
     id : int
     username : str
     role : enums.UserRole = enums.UserRole.user
-    class Config:
-        from_attribute = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TodoCreate(BaseModel):
@@ -40,16 +39,14 @@ class TodoShow(BaseModel):
     updated_at : datetime | None
     due_date : datetime | None
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
         
         
         
 class OwnerShow(BaseModel):
     username: str
     role : enums.UserRole
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
         
 
@@ -69,8 +66,7 @@ class TodoShowWithOwner(BaseModel):
     
     owner : OwnerShow
         
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
         
         
 class TodoShowUpdate(TodoShow):

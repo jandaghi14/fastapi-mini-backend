@@ -6,6 +6,7 @@ from app.presentation.routers.user_router import router
 from app.presentation.routers.general_routes import router_genereal
 from app.presentation.routers.admin_router import router_admin
 from app.presentation.routers.todo_router import todo_router
+from app.core.logger import logger
 # ===============
 import time
 # ===============
@@ -47,6 +48,6 @@ async def log_requests(request: Request, call_next):
     
     process_time = time.time() - start_time
     
-    print(f"{request.method} {request.url.path} ---- {process_time:.4f}s")
+    logger.info(f"{request.method} {request.url.path} ---- {process_time:.4f}s")
 
     return response

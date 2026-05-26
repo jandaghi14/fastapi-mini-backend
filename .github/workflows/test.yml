@@ -44,3 +44,4 @@ jobs:
           DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: pytest
+        

@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL is None:
+    DATABASE_URL = os.getenv("DATABASE_URL_TEST")
 
 from app.infrastructure import models
 from app.infrastructure.database import Base

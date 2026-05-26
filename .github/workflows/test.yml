@@ -2,11 +2,12 @@ name: Run Tests
 
 on:
   push:
-    branches:
-      - main
+  workflow_dispatch:  
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     services:
       postgres:
         image: postgres:15
@@ -23,7 +24,7 @@ jobs:
           --health-retries 5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -44,3 +45,4 @@ jobs:
           DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: pytest
+        

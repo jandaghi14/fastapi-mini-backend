@@ -1,3 +1,5 @@
+[![Run Tests](https://github.com/jandaghi14/fastapi-mini-backend/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/jandaghi14/fastapi-mini-backend/actions/workflows/test.yml)
+
 # FastAPI Mini Backend
 
 A production-structured REST API built with FastAPI, PostgreSQL, SQLAlchemy, and JWT authentication.

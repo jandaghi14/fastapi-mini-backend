@@ -8,6 +8,7 @@ from app.infrastructure.database import get_db
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status, HTTPException
 from sqlalchemy.orm import Session
+from jose import JWTError
 
 
 
@@ -41,9 +42,7 @@ def login_user(data, db):
 
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl='/login')
-from jose import JWTError
 def get_current_user(token : str = Depends(oauth_scheme)):
-    from fastapi import HTTPException
     try:
         decoded = authentication.decode_token_access(token)
         if decoded:

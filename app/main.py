@@ -12,6 +12,15 @@ import time
 # ===============
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    # It is safe for developing phase but in production it is dangerous
+    allow_origins = ['http://localhost:3000'],
+    allow_credentials = True,
+    allow_methods = ['*'],
+    allow_headers = ['*'],
+)
 app.include_router(router= router)
 app.include_router(router= router_genereal)
 app.include_router(router= router_admin)
@@ -31,14 +40,6 @@ async def global_exception_handler(request : Request, exc : Exception):
 
 
 
-app.add_middleware(
-    CORSMiddleware,
-    # It is safe for developing phase but in production it is dangerous
-    allow_origins = ['http://localhost:3000'],
-    allow_credentials = True,
-    allow_methods = ['*'],
-    allow_headers = ['*'],
-)
 
 @app.middleware('http')
 async def log_requests(request: Request, call_next):

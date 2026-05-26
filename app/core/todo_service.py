@@ -77,7 +77,7 @@ def get_all_todos_with_username(current_user:int, db,user_id:int = None, limit =
         else:
             raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail='User not found')
     if user_repository.get_user_by_id_db(current_user,db):
-        return todo_repository.get_all_todos_with_username_db(current_user, db, limit= limit, offset=offset,due_date_from=due_date_from)
+        return todo_repository.get_all_todos_with_username_db(current_user, db, limit= limit, offset=offset,due_date_from=due_date_from, include_deleted=False)
     else:
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail='User not found')
     

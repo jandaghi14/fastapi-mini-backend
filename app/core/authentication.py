@@ -20,12 +20,12 @@ def verify_password(plain_password, hashed_password):
 # ===================================================
 ALGORITHM = 'HS256'
 SECRET_KEY = os.getenv('SECRET_KEY')
+EXPIRE_ACCESS_TIME = 30
 
 
 def create_access_token(username , id , role, delta_expire : timedelta | None = None):
     if not SECRET_KEY:
         raise Exception('Secret key is being missed') 
-    EXPIRE_ACCESS_TIME = 30
     
     payload = {
         'sub' : username,

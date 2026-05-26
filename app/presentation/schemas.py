@@ -51,21 +51,17 @@ class OwnerShow(BaseModel):
         
 
 class TodoShowWithOwner(BaseModel):
-    id : int
-    user_id : int
-    
-    title : str
-    description : str | None = None
-    
-    created_at : datetime
-    
-    status : enums.TodoStatus
-    priority : enums.TodoPriority
-    
-    is_deleted : bool
-    
-    owner : OwnerShow
-        
+    id: int
+    user_id: int
+    title: str
+    description: str | None = None
+    created_at: datetime
+    status: enums.TodoStatus
+    priority: enums.TodoPriority
+    is_deleted: bool
+    updated_at: datetime | None
+    due_date: datetime | None
+    owner: OwnerShow
     model_config = ConfigDict(from_attributes=True)
         
         

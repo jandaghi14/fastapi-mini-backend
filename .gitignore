@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.production
+.env.docker
 
 # Python
 __pycache__/
@@ -41,3 +42,9 @@ app/alembic/versions/__pycache__/
 dist/
 build/
 *.egg-info/
+
+#  App log
+app.log
+
+
+packages/

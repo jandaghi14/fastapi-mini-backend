@@ -14,7 +14,7 @@ def test_admin_panel(client):
     
     token = login_response.json()['access_token']
     
-    response = client.get('/admin',headers={
+    response = client.get("/admin",headers={
         'Authorization' : f"Bearer {token}"
     }) 
     assert response.status_code == 200   
@@ -33,7 +33,7 @@ def test_admin_hard_delete_todo_success(client, auth_header,create_a_todo):
     assert response.status_code == 200
     assert 'Todo by ID' in response.json()['message']
     
-    response2 = client.get(f'/todos/get_todo_by_id/{todo['id']}',headers = headers)
+    response2 = client.get(f"/todos/get_todo_by_id/{todo['id']}",headers = headers)
     assert response2.status_code == 404
     assert response2.json()['detail'] == "Todo not found"
     
@@ -65,7 +65,7 @@ def test_admin_hard_delete_todo_non_admin_user(client, auth_header,create_a_todo
     headers2 = auth_header(username= username, password= 'randompassword',role = 'user')
 
     response = client.delete(
-        f'/admin/hard_delete_todo/{todo['id']}',
+        f"/admin/hard_delete_todo/{todo['id']}",
         headers = headers2)
     
     assert response.status_code == 403
@@ -212,7 +212,6 @@ def test_admin_get_other_user_all_todos_non_admin_user(client,auth_header,create
     token_user1 = only_get_token(user1_username, user1_password)
     headers_user1 = {"Authorization" : f"Bearer {token_user1}"}
     
-    
     user2_username = f"user_{uuid.uuid4().hex[:6]}"
     user2_password = 'randompass'
     role = 'user'
@@ -250,7 +249,7 @@ def test_admin_can_see_soft_deleted_todos(client,auth_header,create_user,create_
     
     todo2 =create_a_todo(title = 'testtitletodo2', headers = headers_user1)
     
-    client.delete(f'/todos/delete_todo/{todo1['id']}',headers = headers_user1)
+    client.delete(f"/todos/delete_todo/{todo1['id']}",headers = headers_user1)
     
     
 

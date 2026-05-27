@@ -3,21 +3,17 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import time
 
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded# ===============
-
 
 from app.presentation.routers.user_router import router
 from app.presentation.routers.general_routes import router_genereal
 from app.presentation.routers.admin_router import router_admin
 from app.presentation.routers.todo_router import todo_router
 from app.core.logger import logger
+from app.core.limiter import Limiter
 # ===============
 
 app = FastAPI()
 
-limiter = Limiter(key_func = get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded , _rate_limit_exceeded_handler)
 

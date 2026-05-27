@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.presentation import schemas
 from app.core import user_service
 from app.infrastructure.database import get_db
-from app.main import limiter
+from app.core.limiter import limiter
 
 router = APIRouter()
 

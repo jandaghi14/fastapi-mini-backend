@@ -3,13 +3,16 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import time
 
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+
 
 from app.presentation.routers.user_router import router
 from app.presentation.routers.general_routes import router_genereal
 from app.presentation.routers.admin_router import router_admin
 from app.presentation.routers.todo_router import todo_router
 from app.core.logger import logger
-from app.core.limiter import Limiter
+from app.core.limiter import limiter
 # ===============
 
 app = FastAPI()

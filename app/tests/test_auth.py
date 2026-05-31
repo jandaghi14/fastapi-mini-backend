@@ -61,6 +61,17 @@ def test_jwt_flow_expired_token(client):
     assert response.status_code == 401
     assert response.json()['detail'] == "Authentication failed!" 
 #========================================================    
-
-
+def test_login_rate_limit_exceeded(client, create_user):
+    user1 = create_user('usernameexample','passwordexample', role = 'user')
+    for attempt in range(6):
+        response = client.post('/login',data={
+                                            "username": 'usernameexample',
+                                            "password" : 'passwordexample'
+                                            }
+                               )
+        if attempt==5:
+            assert response.status_code == 429
+        else:
+            assert response.status_code == 200
+    
 

@@ -17,8 +17,8 @@ def endpoint_register_user(new_user:schemas.UserCreate,db:Session = Depends(get_
         return result
     raise HTTPException(status_code=409, detail="User already exists")
 
-@limiter.limit("5/minute")
 @router.post('/login')
+@limiter.limit("5/minute")
 def login_user(request: Request ,data : OAuth2PasswordRequestForm = Depends(), db : Session = Depends(get_db)):
     result =  user_service.login_user(data , db)
     if result is None:

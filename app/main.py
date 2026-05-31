@@ -14,14 +14,11 @@ from app.presentation.routers.todo_router import todo_router
 from app.core.logger import logger
 from app.core.limiter import limiter
 # ===============
-
 app = FastAPI()
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded , _rate_limit_exceeded_handler)
-
-
-
+#==================================================================================
 app.add_middleware(
     CORSMiddleware,
     # It is safe for developing phase but in production it is dangerous
@@ -30,13 +27,12 @@ app.add_middleware(
     allow_methods = ['*'],
     allow_headers = ['*'],
 )
+#==================================================================================
 app.include_router(router= router)
 app.include_router(router= router_genereal)
 app.include_router(router= router_admin)
 app.include_router(router= todo_router)
-
-
-
+#==================================================================================
 @app.exception_handler(Exception)
 async def global_exception_handler(request : Request, exc : Exception):
     if isinstance(exc , HTTPException):
@@ -45,11 +41,7 @@ async def global_exception_handler(request : Request, exc : Exception):
         status_code= 500,
         content={'detail' : 'Internal server error'}
     )
-
-
-
-
-
+#==================================================================================
 @app.middleware('http')
 async def log_requests(request: Request, call_next):
     start_time = time.time()

@@ -2,13 +2,13 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
-
-from app.main import app
-from app.infrastructure.database import Base, get_db
 import uuid
 import os
 from dotenv import load_dotenv
 
+from app.main import app
+from app.infrastructure.database import Base, get_db
+from app.core.limiter import limiter
 # ==========================================================================================
 load_dotenv()
 
@@ -27,8 +27,6 @@ def override_get_db():
     finally:
         db.close()
 # ==========================================================================================
-
-
 @pytest.fixture(scope="session" , autouse=True)
 def setup_database():
     Base.metadata.create_all(bind = engine)
@@ -37,6 +35,17 @@ def setup_database():
     
     Base.metadata.drop_all(bind = engine)
     
+@pytest.fixture(scope="function" , autouse=True)
+def reset_limiter_slowapi():
+    limiter.reset()
+    
+    yield
+    
+    limiter.reset()
+
+
+
+
 @pytest.fixture()
 def client():
     app.dependency_overrides[get_db] = override_get_db
@@ -44,7 +53,6 @@ def client():
     app.dependency_overrides = {}
     
 # ==========================================================================================
-
 @pytest.fixture
 def create_user(client):
     def _create(username = 'user1test', password = "user1password", role = 'user' ):
@@ -61,8 +69,6 @@ def create_user(client):
                 "role" : response.json()['role']}
     return _create
 
-
-
 @pytest.fixture
 def get_token(client, create_user):
     def _get_token(username='user1test', password = 'user1password', role = 'user'):
@@ -76,8 +82,6 @@ def get_token(client, create_user):
         return res.json()['access_token']
                 
     return _get_token
-
-
 
 @pytest.fixture
 def only_get_token(client):

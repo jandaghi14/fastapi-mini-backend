@@ -17,6 +17,10 @@ This is my main portfolio project — built as part of my journey from Sales to 
 - **Authentication:** JWT (python-jose) + bcrypt (passlib)
 - **Testing:** pytest with isolated PostgreSQL test database
 - **Architecture:** 3-layer (Presentation → Core → Infrastructure)
+- **Containerization:** Docker + docker-compose
+- **CI/CD:** GitHub Actions
+- **Code Quality:** flake8
+- **Rate Limiting:** slowapi
 
 ---
 
@@ -52,7 +56,10 @@ fastapi-mini-backend/
 │       ├── test_auth.py
 │       ├── test_todo.py
 │       └── test_admin.py
+├── Dockerfile
+├── docker-compose.yml
 ├── .env.example
+├── .env.docker.example
 ├── alembic.ini
 └── pytest.ini
 ```
@@ -70,7 +77,10 @@ fastapi-mini-backend/
 - GET /me — returns current logged-in user profile
 - Custom middleware — request logging with response time
 - CORS configured
-- Full test suite — 47 tests, all passing
+- Rate limiting on sensitive endpoints (slowapi)
+- Dockerized — full stack runs with docker-compose up
+- CI/CD pipeline — GitHub Actions runs flake8 + full test suite on every push
+- Full test suite — 48 tests, all passing
 
 ---
 
@@ -88,7 +98,7 @@ fastapi-mini-backend/
 |--------|----------|-------------|------|
 | POST | /todos/create_todo | Create a todo | Yes |
 | GET | /todos/get_all_todos | Get all your todos (paginated) | Yes |
-| GET | /todos/get_all_todo_with_username | Get all your todos the owner name (paginated) | Yes |
+| GET | /todos/get_all_todo_with_username | Get all your todos with owner name (paginated) | Yes |
 | GET | /todos/get_todo_by_id/{id} | Get a single todo | Yes |
 | PUT | /todos/update_todo/{id} | Update a todo | Yes |
 | DELETE | /todos/delete_todo/{id} | Soft delete a todo | Yes |
@@ -99,7 +109,7 @@ fastapi-mini-backend/
 | GET | /admin/ | Admin panel | Admin only |
 | GET | /admin/get_all_todos/{user_id} | Get any user's todos (paginated) | Admin only |
 | GET | /admin/get_todo_by_id/{id} | Get any todo | Admin only |
-| GET | /admin/get_all_todos_with_owner/{user_id} | Get any user's todos with the owner name (paginated) | Admin only |
+| GET | /admin/get_all_todos_with_owner/{user_id} | Get any user's todos with owner name (paginated) | Admin only |
 | PUT | /admin/update_todo/{id} | Update any todo | Admin only |
 | DELETE | /admin/hard_delete_todo/{id} | Hard delete a todo | Admin only |
 | DELETE | /admin/delete_user/{id} | Delete a user | Admin only |
@@ -157,6 +167,33 @@ Visit: http://localhost:8000/docs
 
 ---
 
+## Running with Docker
+
+### 1. Configure Docker environment
+```bash
+cp .env.docker.example .env.docker
+```
+Edit `.env.docker` and fill in your values:
+```
+DATABASE_URL=postgresql://postgres:yourpassword@db:5432/your_db_name
+DATABASE_URL_TEST=postgresql://postgres:yourpassword@db:5432/your_test_db_name
+SECRET_KEY=your-secret-key
+```
+
+### 2. Start the containers
+```bash
+docker-compose up -d
+```
+
+### 3. Run migrations inside Docker
+```bash
+docker-compose exec app alembic upgrade head
+```
+
+Visit: http://localhost:8000/docs
+
+---
+
 ## Running Tests
 
 Create a test database in PostgreSQL, then update `conftest.py` with your test database URL.
@@ -165,7 +202,7 @@ Create a test database in PostgreSQL, then update `conftest.py` with your test d
 pytest -vv
 ```
 
-Expected: **47 tests passing**
+Expected: **48 tests passing**
 
 ---
 
@@ -185,12 +222,20 @@ Request → Presentation (routers) → Core (services) → Infrastructure (repos
 
 ## Current Status
 
-This project is actively being developed. Features being added next:
+This project is actively being developed.
 
-- [ ] Alembic migrations replacing create_all in tests
-- [ ] Docker + docker-compose
-- [ ] GitHub Actions CI/CD pipeline
-- [ ] Railway deployment
+### Completed
+- [x] 3-layer architecture (Presentation → Core → Infrastructure)
+- [x] JWT authentication + bcrypt password hashing
+- [x] Role-based access control
+- [x] Full test suite — 48 tests, all passing
+- [x] Rate limiting (slowapi)
+- [x] Docker + docker-compose
+- [x] GitHub Actions CI/CD pipeline with flake8 + pytest
+- [x] Deployment-ready (cloud deployment blocked by regional network restrictions)
+
+### Coming Next
+- [ ] Phase 4 features (TBD)
 
 ---
 

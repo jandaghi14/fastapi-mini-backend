@@ -12,9 +12,10 @@ if DATABASE_URL is None:
 if DATABASE_URL is None:
     raise Exception("Database cannot be found")
 
-engine= create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit = False)
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()
@@ -22,6 +23,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-

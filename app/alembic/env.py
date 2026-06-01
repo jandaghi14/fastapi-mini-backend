@@ -1,11 +1,5 @@
 from dotenv import load_dotenv
 import os
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-if DATABASE_URL is None:
-    DATABASE_URL = os.getenv("DATABASE_URL_TEST")
-
-from app.infrastructure import models
 from app.infrastructure.database import Base
 
 from logging.config import fileConfig
@@ -15,12 +9,18 @@ from sqlalchemy import pool
 
 from alembic import context
 
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL is None:
+    DATABASE_URL = os.getenv("DATABASE_URL_TEST")
+
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 config.set_main_option(
-    "sqlalchemy.url" , DATABASE_URL
+    "sqlalchemy.url", DATABASE_URL
 )
 
 # Interpret the config file for Python logging.
